@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For Ore</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;1,9..144,400&family=Karla:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-0:#141220;
+    --bg-1:#1c1926;
+    --gold:#c9a15b;
+    --gold-soft:#e3c58a;
+    --rose:#d88c7c;
+    --cream:#f2ece1;
+    --dim:#8b8698;
+  }
+  *{box-sizing:border-box;}
+  html,body{
+    margin:0;
+    padding:0;
+    background:var(--bg-0);
+    color:var(--cream);
+    font-family:'Karla',sans-serif;
+    overflow-x:hidden;
+    min-height:100vh;
+  }
+  body{
+    background:
+      radial-gradient(ellipse 80% 50% at 50% -10%, rgba(201,161,91,0.10), transparent),
+      radial-gradient(ellipse 60% 40% at 90% 90%, rgba(216,140,124,0.06), transparent),
+      var(--bg-0);
+  }
+
+  .stage{
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:6vh 6vw;
+  }
+
+  .card{
+    max-width:620px;
+    width:100%;
+    text-align:center;
+    opacity:0;
+    transform:translateY(14px);
+    animation:rise 0.9s cubic-bezier(.19,1,.22,1) forwards;
+  }
+  @keyframes rise{
+    to{opacity:1; transform:translateY(0);}
+  }
+
+  .eyebrow{
+    font-family:'Karla',sans-serif;
+    font-size:12px;
+    letter-spacing:0.22em;
+    text-transform:uppercase;
+    color:var(--gold);
+    margin-bottom:22px;
+    font-weight:500;
+    opacity:0.85;
+  }
+
+  h1, h2{
+    font-family:'Fraunces',serif;
+    font-weight:500;
+    line-height:1.15;
+    margin:0 0 24px;
+    letter-spacing:-0.01em;
+  }
+  h1{ font-size:clamp(32px,6vw,54px); }
+  h2{ font-size:clamp(26px,4.4vw,38px); font-style:italic; font-weight:400; }
+
+  p.lead{
+    font-size:clamp(16px,2vw,19px);
+    line-height:1.75;
+    color:#dcd6ea;
+    font-weight:300;
+    max-width:520px;
+    margin:0 auto 8px;
+  }
+
+  p.lead + p.lead{ margin-top:16px; }
+
+  .gem-wrap{
+    display:flex;
+    justify-content:center;
+    margin-bottom:34px;
+  }
+
+  svg.gem{
+    width:64px;
+    height:64px;
+    filter:drop-shadow(0 0 18px rgba(201,161,91,0.35));
+    transition:filter 0.6s ease;
+  }
+  .gem polygon{
+    stroke:var(--gold-soft);
+    stroke-width:0.6;
+    transition:fill 0.5s ease;
+  }
+
+  .btn{
+    appearance:none;
+    border:1px solid rgba(230,200,140,0.35);
+    background:rgba(201,161,91,0.08);
+    color:var(--cream);
+    font-family:'Karla',sans-serif;
+    font-size:14px;
+    letter-spacing:0.04em;
+    padding:14px 34px;
+    border-radius:999px;
+    cursor:pointer;
+    margin-top:14px;
+    transition:all 0.35s ease;
+  }
+  .btn:hover, .btn:focus-visible{
+    background:rgba(201,161,91,0.18);
+    border-color:var(--gold-soft);
+    transform:translateY(-1px);
+  }
+  .btn:focus-visible{ outline:2px solid var(--gold-soft); outline-offset:3px; }
+  .btn.secondary{
+    background:transparent;
+    border-color:rgba(230,200,140,0.18);
+    color:var(--dim);
+    font-size:13px;
+    padding:10px 22px;
+  }
+  .btn.secondary:hover{ color:var(--cream); border-color:rgba(230,200,140,0.35); }
+
+  .btn-row{
+    display:flex;
+    gap:12px;
+    justify-content:center;
+    flex-wrap:wrap;
+    margin-top:8px;
+  }
+
+  .progress{
+    position:fixed;
+    bottom:26px;
+    left:0; right:0;
+    display:flex;
+    justify-content:center;
+    gap:8px;
+  }
+  .dot{
+    width:6px; height:6px;
+    border-radius:50%;
+    background:rgba(230,200,140,0.2);
+    transition:all 0.4s ease;
+  }
+  .dot.active{ background:var(--gold-soft); width:18px; border-radius:4px; }
+  .dot.done{ background:rgba(230,200,140,0.55); }
+
+  .step{ display:none; }
+  .step.visible{ display:block; }
+
+  .signature{
+    font-family:'Fraunces',serif;
+    font-style:italic;
+    font-size:20px;
+    color:var(--gold-soft);
+    margin-top:36px;
+    opacity:0.9;
+  }
+
+  .final-word{
+    font-family:'Fraunces',serif;
+    font-size:clamp(48px,10vw,88px);
+    font-weight:500;
+    background:linear-gradient(120deg, var(--gold-soft), var(--rose));
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+    margin:0 0 10px;
+    letter-spacing:-0.02em;
+  }
+
+  .heart-note{
+    font-size:13px;
+    color:var(--dim);
+    margin-top:40px;
+    letter-spacing:0.02em;
+  }
+
+  /* PHOTO SLOTS — add a real photo by placing the image file in the same folder
+     and updating the src attribute below. */
+  .photo-slot{
+    width:100%;
+    max-width:320px;
+    margin:0 auto 28px;
+    border-radius:6px;
+    overflow:hidden;
+    box-shadow:0 12px 34px rgba(0,0,0,0.35);
+    border:1px solid rgba(230,200,140,0.18);
+  }
+  .photo-slot img{
+    display:block;
+    width:100%;
+    height:auto;
+    aspect-ratio:4/5;
+    object-fit:cover;
+  }
+  .photo-slot.is-empty{
+    aspect-ratio:4/5;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:
+      repeating-linear-gradient(135deg, rgba(230,200,140,0.05) 0 10px, rgba(230,200,140,0.02) 10px 20px),
+      var(--bg-1);
+    border:1px dashed rgba(230,200,140,0.35);
+  }
+  .photo-slot.is-empty img{ display:none; }
+
+  /* SLIDESHOW */
+  .slideshow{
+    position:relative;
+    max-width:320px;
+    margin:0 auto 28px;
+    overflow:hidden;
+  }
+  .slideshow-track{
+    overflow:hidden;
+    border-radius:6px;
+    box-shadow:0 12px 34px rgba(0,0,0,0.35);
+    border:1px solid rgba(230,200,140,0.18);
+  }
+  .slideshow-track .slide{
+    display:none;
+    width:100%;
+    margin:0;
+    border-radius:0;
+    box-shadow:none;
+    border:none;
+  }
+  .slideshow-track .slide.active{
+    display:block;
+  }
+
+  .slide-arrow{
+    position:absolute;
+    top:50%;
+    transform:translateY(-50%);
+    background:rgba(20,18,32,0.55);
+    border:1px solid rgba(230,200,140,0.3);
+    color:var(--cream);
+    width:32px;
+    height:32px;
+    border-radius:50%;
+    cursor:pointer;
+    font-size:18px;
+    line-height:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition:background 0.3s ease;
+  }
+  .slide-arrow:hover, .slide-arrow:focus-visible{ background:rgba(201,161,91,0.35); }
+  .slide-arrow.prev{ left:-14px; }
+  .slide-arrow.next{ right:-14px; }
+
+  .slide-dots{
+    display:flex;
+    justify-content:center;
+    gap:6px;
+    margin-top:12px;
+  }
+  .slide-dots .dot{
+    width:6px; height:6px;
+    cursor:pointer;
+  }
+  .slide-dots .dot.active{ background:var(--gold-soft); width:16px; border-radius:4px; }
+
+  @media (prefers-reduced-motion: reduce){
+    .card{ animation:none; opacity:1; transform:none; }
+    .btn, svg.gem, .dot{ transition:none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="stage">
+
+  <!-- Step 0 -->
+  <div class="step visible" data-step="0">
+    <div class="card">
+      <div class="gem-wrap">
+        <svg class="gem" viewBox="0 0 64 64" id="gem0">
+          <polygon points="32,4 54,22 46,58 18,58 10,22" fill="#3a3548"/>
+        </svg>
+      </div>
+      <div class="eyebrow">A small thing, for you</div>
+      <h1>For Ore</h1>
+      <p class="lead">Before anything else — this is just from me to you. No excuses in here, I promise. Just what's actually in my head.</p>
+      <div class="btn-row">
+        <button class="btn" onclick="goTo(1)">Open it</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 1 -->
+  <div class="step" data-step="1">
+    <div class="card">
+      <div class="eyebrow">First</div>
+      <h2>I know what I did was stupid.</h2>
+      <p class="lead">Not "stupid, but here's why." Just stupid. I'm not going to dress it up or explain it into being smaller than it was.</p>
+      <p class="lead">You deserved better from me, and I didn't give it to you. That's on me, fully.</p>
+      <div class="btn-row">
+        <button class="btn" onclick="goTo(2)">Keep going</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 2 -->
+  <div class="step" data-step="2">
+    <div class="card">
+      <div class="gem-wrap">
+        <svg class="gem" viewBox="0 0 64 64" id="gem2">
+          <polygon points="32,4 54,22 46,58 18,58 10,22" fill="#4a3f4e"/>
+        </svg>
+      </div>
+      <div class="eyebrow">Second</div>
+      <h2>I'm sorry. Really.</h2>
+      <p class="lead">Not the kind of sorry that's just trying to move past an awkward moment. The kind that sat with me and made me actually think about how it landed on you.</p>
+      <p class="lead">I'm sorry for the part I played in making you feel hurt, or small, or unsure of where you stand with me. You should never have to wonder that.</p>
+      <p class="lead">I keep thinking about that moment and how it made you feel.</p>
+      <div class="btn-row">
+        <button class="btn" onclick="goTo(3)">Keep going</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 3 -->
+  <div class="step" data-step="3">
+    <div class="card">
+      <div class="gem-wrap">
+        <svg class="gem" viewBox="0 0 64 64" id="gem3">
+          <polygon points="32,4 54,22 46,58 18,58 10,22" fill="#6b5540"/>
+        </svg>
+      </div>
+      <div class="eyebrow">Third</div>
+      <h2>Here's the truth underneath it.</h2>
+      <figure class="photo-slot is-empty">
+        <img src="" alt="A favorite photo of us" onload="this.parentElement.classList.remove('is-empty')" onerror="this.parentElement.classList.add('is-empty')">
+      </figure>
+      <p class="lead">You are the best part of my life. Not in a throwaway-line kind of way — I mean it changes how my days feel, just knowing you're in them.</p>
+      <p class="lead">Like the way you make ordinary moments feel warm, and the little everyday things that most people wouldn't even notice, but I do.</p>
+      <p class="lead">Your patience, your mind, the way you show up for the people you love — I notice it, all of it, even when I do a bad job of showing that I notice.</p>
+      <div class="btn-row">
+        <button class="btn" onclick="goTo(4)">Keep going</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 4 -->
+  <div class="step" data-step="4">
+    <div class="card">
+      <div class="eyebrow">Fourth</div>
+      <h2>What I'm actually going to do</h2>
+      <p class="lead">I don't want this to just be words on a screen. I want to be someone who's more careful with you, more thoughtful, less careless with something this important.</p>
+      <p class="lead">I'm asking for the chance to show that — through what I do next, not just what I say now.</p>
+      <div class="btn-row">
+        <button class="btn" onclick="goTo(5)">Keep going</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 5 - her own message -->
+  <div class="step" data-step="5">
+    <div class="card">
+      <div class="eyebrow">Fifth</div>
+      <h2>What I really want to say</h2>
+      <p class="lead">I know saying "I'm sorry" doesn't automatically fix anything, and I know I can't ask you to just forget what happened because of everything. You deserve better than empty apologies.</p>
+      <p class="lead">I'm not asking you to stop being hurt immediately. I just want you to know that I recognize where I went wrong, I genuinely regret it, and I want to learn from it and do better.</p>
+      <p class="lead">I miss you like I said earlier. 😭❤️ I miss the morning texts, your random gist, hearing about your day, ranting to you, the random spams, and just being able to talk to you about anything.</p>
+      <p class="lead">I miss us.</p>
+      <p class="lead">I don't want to pressure you into forgiving me before you're ready. Take your time — but not too long, because it's killing me that I can't randomly call to tell you stuff like we used to. I just hope that, when you're ready, we can slowly find our way back to how we used to be. Back to our random conversations, our laughter, our little moments, and just us again. ❤️</p>
+      <p class="lead">We've found our way through difficult moments before, and I still believe what we have is worth fighting for.</p>
+      <p class="lead">I really fucked up this time, Ore, and I'm genuinely sorry. If I could take away the tears I caused you, I would.</p>
+      <p class="lead">I just want my babe back, and I hope we can get back to being us again. ❤️</p>
+      <div class="btn-row">
+        <button class="btn" onclick="goTo(6)">Keep going</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 6 - final -->
+  <div class="step" data-step="6">
+    <div class="card">
+      <div class="gem-wrap">
+        <svg class="gem" viewBox="0 0 64 64" id="gem5">
+          <defs>
+            <linearGradient id="finalGrad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#e3c58a"/>
+              <stop offset="100%" stop-color="#d88c7c"/>
+            </linearGradient>
+          </defs>
+          <polygon points="32,4 54,22 46,58 18,58 10,22" fill="url(#finalGrad)"/>
+        </svg>
+      </div>
+      <p class="eyebrow">Last thing</p>
+      <!-- PHOTO SLIDESHOW: put up to 5 photos in this folder named
+           photo-1.jpg, photo-2.jpg, photo-3.jpg, photo-4.jpg, photo-5.jpg
+           (or edit the src= values below to match your own filenames).
+           Any slide without a matching file just shows an empty frame —
+           nothing breaks if you only have 2 or 3 photos. -->
+      <div class="slideshow" id="slideshow">
+        <div class="slideshow-track">
+          <figure class="photo-slot is-empty slide">
+            <img src="" alt="Us" onload="this.parentElement.classList.remove('is-empty')" onerror="this.parentElement.classList.add('is-empty')">
+          </figure>
+          <figure class="photo-slot is-empty slide">
+            <img src="" alt="Us" onload="this.parentElement.classList.remove('is-empty')" onerror="this.parentElement.classList.add('is-empty')">
+          </figure>
+          <figure class="photo-slot is-empty slide">
+            <img src="" alt="Us" onload="this.parentElement.classList.remove('is-empty')" onerror="this.parentElement.classList.add('is-empty')">
+          </figure>
+          <figure class="photo-slot is-empty slide">
+            <img src="" alt="Us" onload="this.parentElement.classList.remove('is-empty')" onerror="this.parentElement.classList.add('is-empty')">
+          </figure>
+          <figure class="photo-slot is-empty slide">
+            <img src="" alt="Us" onload="this.parentElement.classList.remove('is-empty')" onerror="this.parentElement.classList.add('is-empty')">
+          </figure>
+        </div>
+        <button class="slide-arrow prev" onclick="shiftSlide(-1)" aria-label="Previous photo">&#8249;</button>
+        <button class="slide-arrow next" onclick="shiftSlide(1)" aria-label="Next photo">&#8250;</button>
+        <div class="slide-dots" id="slideDots"></div>
+      </div>
+      <p class="final-word">I love you.</p>
+      <p class="lead">Thank you for being patient with me while I figure out how to be better. I don't take that for granted.</p>
+      <p class="signature">— Yours, OSA❤️❤️</p>
+      <p class="heart-note">(you can close this now, or read it again — I'll say it as many times as you need)</p>
+      <div class="btn-row">
+        <button class="btn secondary" onclick="goTo(0)">Read it again</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="progress" id="progress"></div>
+
+<script>
+  const total = 7;
+  let current = 0;
+
+  const progressEl = document.getElementById('progress');
+  for(let i=0;i<total;i++){
+    const d = document.createElement('div');
+    d.className = 'dot';
+    progressEl.appendChild(d);
+  }
+
+  function updateProgress(){
+    const dots = progressEl.children;
+    for(let i=0;i<dots.length;i++){
+      dots[i].classList.remove('active','done');
+      if(i < current) dots[i].classList.add('done');
+      if(i === current) dots[i].classList.add('active');
+    }
+  }
+
+  function goTo(n){
+    const steps = document.querySelectorAll('.step');
+    steps.forEach(s => s.classList.remove('visible'));
+    current = n;
+    const target = document.querySelector('.step[data-step="'+n+'"]');
+    target.classList.add('visible');
+    // retrigger entrance animation
+    const card = target.querySelector('.card');
+    card.style.animation = 'none';
+    void card.offsetWidth;
+    card.style.animation = '';
+    updateProgress();
+    window.scrollTo(0,0);
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if(e.key === 'ArrowRight' && current < total - 1) goTo(current + 1);
+    if(e.key === 'ArrowLeft' && current > 0) goTo(current - 1);
+  });
+
+  updateProgress();
+
+  const photoFiles = [
+    '1001162361.jpg',
+    '1001162362.jpg',
+    '1001162365.jpg',
+    '1001162367.jpg',
+    '1001162368.jpg',
+    '1001162371.jpg'
+  ];
+
+  function assignRandomPhotos(){
+    const slots = [...document.querySelectorAll('.photo-slot img')];
+    const shuffled = [...photoFiles].sort(() => Math.random() - 0.5);
+    slots.forEach((img, index) => {
+      const file = shuffled[index] || '';
+      img.src = file;
+      img.alt = 'A favorite memory';
+      if(file){
+        img.parentElement.classList.remove('is-empty');
+      } else {
+        img.parentElement.classList.add('is-empty');
+      }
+    });
+  }
+
+  assignRandomPhotos();
+
+  // --- Slideshow ---
+  const slides = document.querySelectorAll('.slideshow-track .slide');
+  const dotsWrap = document.getElementById('slideDots');
+  let slideIndex = 0;
+  let autoTimer = null;
+
+  slides.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === 0 ? ' active' : '');
+    d.addEventListener('click', () => setSlide(i));
+    dotsWrap.appendChild(d);
+  });
+
+  function setSlide(i){
+    slideIndex = (i + slides.length) % slides.length;
+    slides.forEach((slide, idx) => {
+      slide.classList.toggle('active', idx === slideIndex);
+    });
+    [...dotsWrap.children].forEach((d, idx) => {
+      d.classList.toggle('active', idx === slideIndex);
+    });
+  }
+
+  function shiftSlide(dir){
+    setSlide(slideIndex + dir);
+    restartAutoplay();
+  }
+  window.shiftSlide = shiftSlide;
+
+  setSlide(0);
+
+  function restartAutoplay(){
+    if(autoTimer) clearInterval(autoTimer);
+    autoTimer = setInterval(() => setSlide(slideIndex + 1), 4200);
+  }
+  restartAutoplay();
+
+</script>
+
+</body>
+</html>
